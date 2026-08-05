@@ -1,11 +1,11 @@
-# Keeps this repository in sync with Predidit/media-kit.
-# main is merged (not force-reset) so this workflow file stays on the default branch.
+# Daily full sync from Predidit/media-kit.
+# All upstream branches/tags are force-copied. main is merged so this workflow stays.
 name: Sync Upstream
 
 on:
   schedule:
-    # Every 6 hours (UTC)
-    - cron: '0 */6 * * *'
+    # Every day at 00:00 (Asia/Shanghai) = 16:00 UTC
+    - cron: '0 16 * * *'
   workflow_dispatch:
 
 permissions:
@@ -37,7 +37,7 @@ jobs:
           git fetch upstream --tags --force --prune
           git fetch origin --prune
 
-      - name: Sync non-main branches
+      - name: Sync all non-main branches (always force copy)
         run: |
           set -euo pipefail
           while IFS= read -r ref; do
@@ -45,44 +45,43 @@ jobs:
             if [ "$name" = "HEAD" ] || [ "$name" = "main" ]; then
               continue
             fi
-            local_sha="$(git rev-parse "refs/heads/$name" 2>/dev/null || true)"
             upstream_sha="$(git rev-parse "$ref")"
-            if [ "$local_sha" != "$upstream_sha" ]; then
-              echo "Updating branch: $name ($local_sha -> $upstream_sha)"
-              git push origin "$ref:refs/heads/$name" --force
-            else
-              echo "Branch up to date: $name"
-            fi
+            echo "Copying branch: $name -> $upstream_sha"
+            git push origin "$ref:refs/heads/$name" --force
           done < <(git for-each-ref --format='%(refname)' refs/remotes/upstream/)
 
-      - name: Sync main via merge
+      - name: Sync main (merge all upstream changes)
         run: |
           set -euo pipefail
           git checkout -B main origin/main
           before="$(git rev-parse HEAD)"
-          # Prefer ours for the sync workflow if upstream ever adds the same path
+          # Always merge upstream/main so any new commits/files are copied over.
+          # -X ours keeps this sync workflow if paths conflict.
+          if git merge-base --is-ancestor upstream/main HEAD; then
+            echo "main already contains upstream/main; ensuring merge-base is current"
+          fi
           git merge upstream/main --no-edit -X ours \
             || {
-              echo "Merge conflict; keeping our sync workflow and taking upstream elsewhere"
+              echo "Merge conflict; keeping sync workflow, taking upstream elsewhere"
               git checkout --ours .github/workflows/sync-upstream.yml 2>/dev/null || true
               mkdir -p .github/workflows
-              # Ensure workflow exists even if upstream deleted .github
               if [ ! -f .github/workflows/sync-upstream.yml ]; then
                 git show origin/main:.github/workflows/sync-upstream.yml > .github/workflows/sync-upstream.yml
               fi
               git add -A
-              git commit -m "chore: sync upstream/main (resolve conflicts)"
+              git commit --allow-empty -m "chore: daily sync from upstream/main"
             }
           after="$(git rev-parse HEAD)"
           if [ "$before" != "$after" ]; then
             git push origin main
             echo "main updated: $before -> $after"
           else
-            echo "main already up to date with upstream"
+            # Still push a no-op marker only when needed; otherwise report up to date
+            echo "main already mirrored upstream content (plus sync workflow)"
           fi
 
-      - name: Sync tags
+      - name: Sync all tags (always force copy)
         run: |
           set -euo pipefail
-          git push origin --tags --force
-          echo "Tags synced."
+          git push origin "refs/tags/*:refs/tags/*" --force
+          echo "All tags copied from upstream."
