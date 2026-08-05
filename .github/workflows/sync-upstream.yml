@@ -56,17 +56,20 @@ jobs:
           git checkout -B main origin/main
           before="$(git rev-parse HEAD)"
           # Always merge upstream/main so any new commits/files are copied over.
-          # -X ours keeps this sync workflow if paths conflict.
+          # -X ours keeps sync workflow + Years-kit README if paths conflict.
           if git merge-base --is-ancestor upstream/main HEAD; then
             echo "main already contains upstream/main; ensuring merge-base is current"
           fi
           git merge upstream/main --no-edit -X ours \
             || {
-              echo "Merge conflict; keeping sync workflow, taking upstream elsewhere"
-              git checkout --ours .github/workflows/sync-upstream.yml 2>/dev/null || true
+              echo "Merge conflict; keeping Years-kit docs/workflow, taking upstream elsewhere"
+              git checkout --ours .github/workflows/sync-upstream.yml README.md 2>/dev/null || true
               mkdir -p .github/workflows
               if [ ! -f .github/workflows/sync-upstream.yml ]; then
                 git show origin/main:.github/workflows/sync-upstream.yml > .github/workflows/sync-upstream.yml
+              fi
+              if [ ! -f README.md ]; then
+                git show origin/main:README.md > README.md
               fi
               git add -A
               git commit --allow-empty -m "chore: daily sync from upstream/main"
