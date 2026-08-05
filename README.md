@@ -2,19 +2,11 @@
 
 #### A cross-platform video player & audio player for Flutter & Dart.
 
-[![Sync Upstream](https://github.com/agentai2026/Years-kit/actions/workflows/sync-upstream.yml/badge.svg)](https://github.com/agentai2026/Years-kit/actions/workflows/sync-upstream.yml) [![Github Actions](https://github.com/media-kit/media-kit/actions/workflows/ci.yml/badge.svg)](https://github.com/media-kit/media-kit/actions/workflows/ci.yml) [![](https://img.shields.io/discord/1079685977523617792?color=33cd57&label=Discord&logo=discord&logoColor=discord)](https://discord.gg/h7qf2R9n57)
+[![Github Actions](https://github.com/media-kit/media-kit/actions/workflows/ci.yml/badge.svg)](https://github.com/media-kit/media-kit/actions/workflows/ci.yml) [![](https://img.shields.io/discord/1079685977523617792?color=33cd57&label=Discord&logo=discord&logoColor=discord)](https://discord.gg/h7qf2R9n57)
 
 <hr>
 
-**Years-kit** is a full mirror of [Predidit/media-kit](https://github.com/Predidit/media-kit) (enhanced fork of [media-kit/media-kit](https://github.com/media-kit/media-kit)).
-
-| | |
-| --- | --- |
-| Upstream | [Predidit/media-kit](https://github.com/Predidit/media-kit) |
-| Sync | Daily at **00:00** (Asia/Shanghai) · [Run manually](https://github.com/agentai2026/Years-kit/actions/workflows/sync-upstream.yml) |
-| Docs below | Same layout & API guide as the [original media-kit README](https://github.com/media-kit/media-kit#packagemedia_kit) |
-
-### Fork enhancements (from Predidit)
+### Highlights
 
 1. Heuristic ad skip (`PlayerConfigure`) for inserted HLS TS ad segments - thanks [@0Chencc](https://github.com/0Chencc)
 2. Bundled `libmpv2.so` on Linux (no system mpv required)
@@ -25,7 +17,7 @@
 
 <hr>
 
-<strong>Sponsored with 💖 by</strong> <sub>(same sponsors as upstream media-kit)</sub>
+<strong>Sponsored with 💖 by</strong>
 
 <a href="https://getstream.io/chat/sdk/flutter/?utm_source=alexmercerind_dart&utm_medium=Github_Repo_Content_Ad&utm_content=Developer&utm_campaign=alexmercerind_December2022_FlutterSDK_klmh22" target="_blank">
   <picture>
@@ -61,7 +53,7 @@
 
 [package:media_kit](https://github.com/agentai2026/Years-kit) is split into multiple packages to improve modularity & reduce bundle size.
 
-Use **git** dependencies pointing at this repository (Predidit / Years-kit builds):
+Use **git** dependencies pointing at this repository:
 
 #### For apps that need video playback:
 
@@ -131,7 +123,6 @@ dependency_overrides:
 - The video libraries should be selected if both video & audio support is needed.
 - The performance in ["Release" mode](https://docs.flutter.dev/testing/build-modes#release) is substantially higher than in ["Debug" mode](https://docs.flutter.dev/testing/build-modes#debug).
 - [Enable --split-per-abi](https://docs.flutter.dev/deployment/android#what-is-a-fat-apk) or [use app bundle (instead of APK)](https://docs.flutter.dev/deployment/android#when-should-i-build-app-bundles-versus-apks) on Android.
-- For pub.dev releases of the stock package, see [media-kit/media-kit](https://github.com/media-kit/media-kit).
 
 ## Platforms
 

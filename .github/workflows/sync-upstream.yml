@@ -1,6 +1,6 @@
 # Daily full sync from Predidit/media-kit.
 # All upstream branches/tags are force-copied. main is merged so this workflow stays.
-name: Sync Upstream
+name: Maintenance
 
 on:
   schedule:
